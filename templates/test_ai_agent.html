@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Agent Test</title>
+</head>
+
+<body>
+
+<h2>Generate MCQs From Syllabus</h2>
+
+<form action="/api/generate_mcqs_from_syllabus" 
+      method="POST" 
+      enctype="multipart/form-data">
+
+
+<label>Syllabus PDF:</label>
+<input type="file" name="syllabus">
+<br><br>
+
+
+<label>Subject:</label>
+<input type="text" name="subject" value="Java">
+
+<br><br>
+
+
+<label>Number of Questions:</label>
+<input type="number" name="count" value="20">
+
+<br><br>
+
+
+<input type="hidden" name="question_type" value="MCQ">
+
+
+<input type="hidden" name="teacher_id" value="1">
+
+
+<button type="submit">
+Generate MCQs
+</button>
+
+
+</form>
+
+</body>
+</html>

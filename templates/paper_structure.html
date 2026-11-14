@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Paper Structure</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+:root{--p:#6c3cf0;--p2:#9147ff}body{background:linear-gradient(135deg,#f7f5ff,#f0ecff);min-height:100vh;font-family:Poppins,Arial,sans-serif}.navbar{background:linear-gradient(135deg,var(--p),var(--p2))}.card{border:0;border-radius:24px;box-shadow:0 18px 45px rgba(93,61,200,.12)}.section-card{border:1px solid #e4ddff;border-radius:18px;padding:22px;margin-bottom:20px;background:white;box-shadow:0 8px 22px rgba(91,61,245,.06)}.section-title{color:#5b3df5}.field-error{display:none;color:#dc3545;font-size:.8rem;font-weight:600;margin-top:5px}.field-error.show{display:block}.is-invalid{border-color:#dc3545!important}.valid{border-color:#22c55e!important}.btn-purple{background:linear-gradient(135deg,var(--p),var(--p2));border:0;color:#fff;border-radius:12px;padding:11px 22px}.btn-purple:hover{color:#fff;transform:translateY(-2px);box-shadow:0 10px 22px rgba(108,60,240,.2)}.btn-back{background:#e9e7ef;border:0;border-radius:12px;padding:11px 25px;color:#444;text-decoration:none}.btn-danger{border-radius:11px}.hint{font-size:.78rem;color:#777}
+</style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head><body>
+
+<aside class="sidebar qpg-shared-sidebar">
+ <div class="logo"><div class="logo-icon"><i class="bi bi-file-earmark-text-fill"></i></div><div class="logo-text"><h4>Smart</h4><p>Question Paper Generator</p></div></div>
+ <ul class="sidebar-menu">
+  <li class=""><a href="/dashboard"><i class="bi bi-house-fill"></i> Dashboard</a></li>
+  <li class="active"><a href="/paper_details"><i class="bi bi-file-earmark-plus"></i> Generate Paper</a></li>
+  <li class=""><a href="/question_bank"><i class="bi bi-book-fill"></i> Question Bank</a></li>
+  <li class=""><a href="/previous_paper"><i class="bi bi-clock-history"></i> Recent Papers</a></li>
+  <li class=""><a href="/papers"><i class="bi bi-folder-fill"></i> View Papers</a></li>
+  <li class=""><a href="/profile"><i class="bi bi-person-fill"></i> Profile</a></li>
+ </ul>
+ <a href="/" class="logout-sidebar"><i class="bi bi-box-arrow-right"></i> Logout</a>
+</aside>
+
+<!-- Shared fixed sidebar and adjustable question figures -->
+<style>
+
+.qpg-shared-sidebar{display:flex;flex-direction:column;background:linear-gradient(180deg,#5B3DF5,#7C4DFF,#D946EF);color:#fff;padding:22px 18px;box-shadow:8px 0 25px rgba(0,0,0,.10)}
+.qpg-shared-sidebar .logo{display:flex;align-items:center;gap:12px;margin:4px 0 32px;position:relative;z-index:1}
+.qpg-shared-sidebar .logo-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,.18);font-size:22px}
+.qpg-shared-sidebar .logo-text h4{font-size:21px;font-weight:800;margin:0;color:#fff}.qpg-shared-sidebar .logo-text p{font-size:10px;margin:2px 0 0;color:#f1eaff}
+.qpg-shared-sidebar .sidebar-menu{list-style:none;padding:0;margin:0;position:relative;z-index:1}.qpg-shared-sidebar .sidebar-menu li{margin:7px 0;border-radius:12px;overflow:hidden}
+.qpg-shared-sidebar .sidebar-menu a,.qpg-shared-sidebar .logout-sidebar{display:flex;align-items:center;gap:13px;padding:13px 14px;color:#fff;text-decoration:none;font-size:14px;font-weight:500;border-radius:12px;transition:background .2s}
+.qpg-shared-sidebar .sidebar-menu a:hover,.qpg-shared-sidebar .sidebar-menu li.active a{background:rgba(255,255,255,.2);color:#fff}
+.qpg-shared-sidebar .sidebar-menu i,.qpg-shared-sidebar .logout-sidebar i{font-size:18px;width:22px;text-align:center}
+.qpg-shared-sidebar .logout-sidebar{margin-top:auto;position:relative;z-index:1;background:rgba(255,255,255,.12)}
+
+.qpg-shared-sidebar{position:fixed!important;left:0!important;top:0!important;bottom:0!important;height:100vh!important;width:260px!important;overflow-y:auto!important;z-index:1050!important}
+body{padding-left:260px!important}
+.qpg-shared-sidebar~*{min-width:0}
+.qpg-figure-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:#65617b;margin:6px 0 12px}
+.qpg-figure-tools input[type=range]{width:150px;accent-color:#6c4cf1}
+.qpg-figure-frame{max-width:100%;overflow:auto}
+.qpg-figure-frame img.qpg-resizable-figure{display:block;height:auto;max-width:100%;object-fit:contain;transition:width .12s ease}
+@media(max-width:992px){body{padding-left:0!important}.qpg-shared-sidebar{left:-260px!important;transition:left .2s}.qpg-shared-sidebar.active{left:0!important}.qpg-shared-sidebar~.main-content{margin-left:0!important;width:100%!important}}
+@media print{.qpg-shared-sidebar,.qpg-figure-tools{display:none!important}body{padding-left:0!important}.qpg-figure-frame img.qpg-resizable-figure{max-width:100%!important}}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+ document.querySelectorAll('img[alt*="graph" i], img[alt*="figure" i], img[alt*="diagram" i], img[alt*="chart" i]').forEach(function(img){
+   if(img.dataset.resizeReady) return; img.dataset.resizeReady='1';
+   var parent=img.parentElement; if(!parent) return;
+   var frame=document.createElement('div'); frame.className='qpg-figure-frame'; parent.insertBefore(frame,img); frame.appendChild(img); img.classList.add('qpg-resizable-figure'); img.style.width='70%';
+   var tools=document.createElement('div'); tools.className='qpg-figure-tools';
+   var label=document.createElement('label'); label.textContent='Figure size';
+   var range=document.createElement('input'); range.type='range'; range.min='25'; range.max='100'; range.step='5'; range.value='70'; range.setAttribute('aria-label','Resize figure');
+   var value=document.createElement('span'); value.textContent='70%';
+   range.addEventListener('input',function(){img.style.width=range.value+'%';value.textContent=range.value+'%';});
+   tools.append(label,range,value); frame.parentElement.insertBefore(tools,frame);
+ });
+});
+</script>
+
+<nav class="navbar navbar-dark"><div class="container"><span class="navbar-brand fw-bold">Smart Question Paper Generator</span></div></nav>
+<div class="container py-5"><div class="card"><div class="card-body p-4 p-md-5"><h3 class="section-title mb-3">Create Paper Structure</h3><form method="POST" action="/preview_paper" id="structureForm"><input type="hidden" name="structure" id="structure"><div id="sections"></div><button type="button" class="btn btn-purple mb-3" onclick="addSection()">+ Add Section</button><div class="d-flex justify-content-between mt-4"><a href="/paper_details" class="btn-back">← Back</a><button type="submit" class="btn btn-purple">Generate Preview →</button></div></form></div></div></div>
+<script>
+let sections=[];window.onload=()=>addSection();
+function addSection(){sections.push({title:'Long Answer Questions',type:'Long Answer',source:'AI',count:6,marks:12,attempt:4,split:'',difficulty:'Medium'});render()}
+function update(i,k,v){sections[i][k]=v;if(k==='type'){if(v==='Long Answer'){Object.assign(sections[i],{title:'Long Answer Questions',count:6,marks:12,attempt:4,split:'',difficulty:'Medium',source:'AI'})}else if(v==='Short Notes'){Object.assign(sections[i],{title:'Write Short Notes',count:5,marks:4,attempt:3,split:'',difficulty:'Easy',source:'AI'})}else{Object.assign(sections[i],{title:'Answer the Following MCQs',count:10,marks:1,attempt:10,split:'',difficulty:'Easy',source:'Question Bank'})}render()}}
+function removeSection(i){sections.splice(i,1);render()}
+function err(i,id,msg){const input=document.getElementById(`s${i}_${id}`),box=document.getElementById(`e${i}_${id}`);if(input)input.classList.add('is-invalid');if(box){box.textContent=msg;box.classList.add('show')}}
+function ok(i,id){const input=document.getElementById(`s${i}_${id}`),box=document.getElementById(`e${i}_${id}`);if(input)input.classList.remove('is-invalid');if(input&&input.value)input.classList.add('valid');if(box){box.textContent='';box.classList.remove('show')}}
+function validateField(i,id){const s=sections[i];if(id==='title'){const v=(s.title||'').trim();if(!v)return err(i,id,'Section title is required.');if(!/^[A-Za-z ]+$/.test(v))return err(i,id,'Title must contain only letters and spaces.');return ok(i,id)}if(['count','marks','attempt'].includes(id)){const v=String(s[id]??'');if(!/^\d+$/.test(v)||Number(v)<1)return err(i,id,`${id[0].toUpperCase()+id.slice(1)} must be a positive number.`);if(id==='marks'&&Number(v)>100)return err(i,id,'Marks cannot be greater than 100.');if(id==='attempt'&&Number(v)>Number(s.count||0))return err(i,id,'Attempt cannot be greater than Count.');return ok(i,id)}if(id==='split'){const v=(s.split||'').trim();if(!v)return ok(i,id);const parts=v.split(',').map(x=>x.trim()).filter(Boolean);if(parts.some(x=>!/^[0-9]+$/.test(x)||Number(x)<1||Number(x)>Number(s.count||0)))return err(i,id,`Split question numbers must be between 1 and ${s.count}.`);return ok(i,id)}}
+function render(){const c=document.getElementById('sections');c.innerHTML='';sections.forEach((s,i)=>{c.insertAdjacentHTML('beforeend',`<div class="section-card"><h5 class="section-title">Section ${i+1}</h5><div class="row"><div class="col-md-6 mb-3"><label class="form-label fw-semibold">Section Title</label><input id="s${i}_title" type="text" class="form-control" value="${escapeHtml(s.title)}" oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'');update(${i},'title',this.value);validateField(${i},'title')"><div id="e${i}_title" class="field-error"></div></div><div class="col-md-3 mb-3"><label class="form-label fw-semibold">Type</label><select class="form-select" onchange="update(${i},'type',this.value)"><option ${s.type==='MCQ'?'selected':''}>MCQ</option><option ${s.type==='Short Notes'?'selected':''}>Short Notes</option><option ${s.type==='Long Answer'?'selected':''}>Long Answer</option></select></div><div class="col-md-3 mb-3"><label class="form-label fw-semibold">Source</label><select class="form-select" onchange="update(${i},'source',this.value)"><option ${s.source==='AI'?'selected':''}>AI</option><option ${s.source==='Question Bank'?'selected':''}>Question Bank</option></select></div></div><div class="row"><div class="col-md-3 mb-3"><label class="form-label fw-semibold">Count</label><input id="s${i}_count" type="text" inputmode="numeric" class="form-control" value="${s.count}" oninput="this.value=this.value.replace(/\D/g,'');update(${i},'count',this.value);validateField(${i},'count');validateField(${i},'attempt')"><div id="e${i}_count" class="field-error"></div></div><div class="col-md-3 mb-3"><label class="form-label fw-semibold">Marks</label><input id="s${i}_marks" type="text" inputmode="numeric" maxlength="3" class="form-control" value="${s.marks}" oninput="this.value=this.value.replace(/\D/g,'').slice(0,3);update(${i},'marks',this.value);validateField(${i},'marks')"><div class="hint">Numbers only, maximum 100.</div><div id="e${i}_marks" class="field-error"></div></div><div class="col-md-3 mb-3"><label class="form-label fw-semibold">Attempt</label><input id="s${i}_attempt" type="text" inputmode="numeric" class="form-control" value="${s.attempt}" oninput="this.value=this.value.replace(/\D/g,'');update(${i},'attempt',this.value);validateField(${i},'attempt')"><div id="e${i}_attempt" class="field-error"></div></div><div class="col-md-3 mb-3"><label class="form-label fw-semibold">Difficulty</label><select class="form-select" onchange="update(${i},'difficulty',this.value)"><option ${s.difficulty==='Easy'?'selected':''}>Easy</option><option ${s.difficulty==='Medium'?'selected':''}>Medium</option><option ${s.difficulty==='Hard'?'selected':''}>Hard</option><option ${s.difficulty==='Mixed'?'selected':''}>Mixed</option></select></div></div><div class="row"><div class="col-md-9 mb-3"><label class="form-label fw-semibold">Split Questions (A/B)</label><input id="s${i}_split" type="text" class="form-control" placeholder="Example: 5,6" value="${escapeHtml(s.split||'')}" oninput="update(${i},'split',this.value);validateField(${i},'split')"><div class="hint">Use comma-separated question numbers.</div><div id="e${i}_split" class="field-error"></div></div><div class="col-md-3 d-flex align-items-end mb-3"><button type="button" class="btn btn-danger w-100" onclick="removeSection(${i})">Delete Section</button></div></div></div>`);validateField(i,'title');validateField(i,'count');validateField(i,'marks');validateField(i,'attempt');validateField(i,'split')})}
+function escapeHtml(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function submitForm(){if(!sections.length){alert('Add at least one section.');return false}for(let i=0;i<sections.length;i++){for(const f of ['title','count','marks','attempt','split'])validateField(i,f);const s=sections[i];if(!/^[A-Za-z ]+$/.test((s.title||'').trim())||!/^\d+$/.test(String(s.count))||Number(s.count)<1||!/^\d+$/.test(String(s.marks))||Number(s.marks)<1||Number(s.marks)>100||!/^\d+$/.test(String(s.attempt))||Number(s.attempt)<1||Number(s.attempt)>Number(s.count)||((s.split||'').trim()&&s.split.split(',').some(x=>!/^[0-9]+$/.test(x.trim())||Number(x.trim())<1||Number(x.trim())>Number(s.count))))return false}document.getElementById('structure').value=JSON.stringify(sections);return true}
+document.getElementById('structureForm').addEventListener('submit',e=>{if(!submitForm())e.preventDefault()});
+</script></body></html>

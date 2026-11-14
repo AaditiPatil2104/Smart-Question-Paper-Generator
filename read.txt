@@ -1,0 +1,241 @@
+@app.route("/generate_paper_from_structure", methods=["POST"])
+def generate_paper_from_structure():
+
+    if require_login():
+        return redirect("/login")
+
+    structure = session.get("paper_structure", [])
+
+    if not structure:
+        return "No structure found"
+
+    # ================= PAPER DETAILS =================
+    details = session.get("paper_details", {})
+
+    university = details.get("university", [""])[0]
+    exam_title = details.get("exam_title", [""])[0]
+    qp_code = details.get("qp_code", [""])[0]
+    subject = details.get("subject", [""])[0]
+
+    marks = int(details.get("marks", [0])[0])
+
+    exam_date = details.get("exam_date", [""])[0]
+    start_time = details.get("start_time", [""])[0]
+    end_time = details.get("end_time", [""])[0]
+
+    instructions = details.get("instructions", [""])[0]
+
+    final_questions = []
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    # ================= GENERATE QUESTIONS =================
+    for sec in structure:
+
+        count = int(sec.get("count", 0))
+        qtype = sec.get("type", "")
+        question_mark = int(sec.get("marks", 1))
+        attempt = int(sec.get("attempt", 0))
+        title = sec.get("title", "")
+        source = sec.get("source", "AI")
+
+        # -------- Split Question List --------
+        split_list = []
+
+        if sec.get("split"):
+
+            try:
+
+                split_list = [
+                    int(x.strip())
+                    for x in sec["split"].split(",")
+                    if x.strip().isdigit()
+                ]
+
+            except:
+                split_list = []
+
+        # ================= LOAD QUESTIONS =================
+
+        if source == "AI":
+
+            questions = []
+
+            for i in range(1, count + 1):
+
+                if i in split_list:
+
+                    parts = generate_ai(
+                        subject,
+                        qtype,
+                        2,
+                        split=True
+                    )
+
+                    questions.append(parts)
+
+                else:
+
+                    single = generate_ai(
+                        subject,
+                        qtype,
+                        1
+                    )
+
+                    if single:
+                        questions.append(single[0])
+
+        else:
+
+            cur.execute("""
+                SELECT
+                    question,
+                    option_a,
+                    option_b,
+                    option_c,
+                    option_d,
+                    type
+                FROM question_bank
+                WHERE teacher_id=?
+                AND subject=?
+                AND type=?
+                LIMIT ?
+            """, (
+                session["teacher_id"],
+                subject,
+                qtype,
+                count
+            ))
+
+            rows = cur.fetchall()
+
+            questions = []
+
+            for r in rows:
+
+                if r["type"] == "MCQ":
+
+                    questions.append({
+                        "question": r["question"],
+                        "options": [
+                            r["option_a"],
+                            r["option_b"],
+                            r["option_c"],
+                            r["option_d"]
+                        ],
+                        "type": "MCQ"
+                    })
+
+                else:
+
+                    questions.append({
+                        "question": r["question"],
+                        "type": r["type"]
+                    })
+                            # ================= PROCESS QUESTIONS =================
+
+        processed_questions = []
+
+        for index, q in enumerate(questions):
+
+            question_number = index + 1
+
+            # ---------------- Split Question ----------------
+            if question_number in split_list:
+
+                # AI returns a list of two parts
+                if isinstance(q, list) and len(q) >= 2:
+
+                    processed_questions.append({
+                        "question": "",
+                        "type": qtype,
+                        "marks": question_mark,
+                        "subparts": [
+                            {
+                                "label": "A",
+                                "question": q[0]["question"],
+                                "marks": question_mark // 2
+                            },
+                            {
+                                "label": "B",
+                                "question": q[1]["question"],
+                                "marks": question_mark // 2
+                            }
+                        ]
+                    })
+
+                else:
+
+                    processed_questions.append({
+                        "question": "",
+                        "type": qtype,
+                        "marks": question_mark,
+                        "subparts": [
+                            {
+                                "label": "A",
+                                "question": "Question not generated",
+                                "marks": question_mark // 2
+                            },
+                            {
+                                "label": "B",
+                                "question": "Question not generated",
+                                "marks": question_mark // 2
+                            }
+                        ]
+                    })
+
+            # ---------------- Normal Question ----------------
+            else:
+
+                q["marks"] = question_mark
+                processed_questions.append(q)
+
+        # ================= ADD SECTION =================
+
+        final_questions.append({
+            "title": title,
+            "type": qtype,
+            "marks": question_mark,
+            "attempt": attempt,
+            "questions": processed_questions
+        })
+            # ================= SAVE PAPER =================
+
+    cur.execute("""
+        INSERT INTO papers(
+            teacher_id,
+            university,
+            exam_title,
+            qp_code,
+            subject,
+            marks,
+            exam_date,
+            start_time,
+            end_time,
+            instructions,
+            questions,
+            created_at
+        )
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?)
+    """, (
+        session["teacher_id"],
+        university,
+        exam_title,
+        qp_code,
+        subject,
+        marks,
+        exam_date,
+        start_time,
+        end_time,
+        instructions,
+        json.dumps(final_questions),
+        datetime.now().strftime("%d-%m-%Y %H:%M")
+    ))
+
+    paper_id = cur.lastrowid
+
+    conn.commit()
+    conn.close()
+
+    return redirect(f"/view_paper/{paper_id}")

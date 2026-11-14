@@ -1,0 +1,87 @@
+
+# =====================================
+# Python cache files
+# =====================================
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# =====================================
+# Virtual environments
+# =====================================
+venv/
+.venv/
+env/
+ENV/
+
+# =====================================
+# Environment variables and API keys
+# =====================================
+.env
+.env.*
+!.env.example
+
+# =====================================
+# IDE and editor files
+# =====================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =====================================
+# Local databases
+# =====================================
+*.db
+*.sqlite
+*.sqlite3
+
+# =====================================
+# Generated question papers and reports
+# =====================================
+paper_*.pdf
+
+# =====================================
+# Uploaded files
+# =====================================
+uploads/*
+!uploads/.gitkeep
+
+# =====================================
+# Backup files
+# =====================================
+*.original
+*.bak
+*.backup
+*~
+
+# =====================================
+# Log and temporary files
+# =====================================
+*.log
+*.tmp
+temp/
+tmp/
+
+# =====================================
+# Operating system files
+# =====================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =====================================
+# Jupyter Notebook checkpoints
+# =====================================
+.ipynb_checkpoints/
+# Generated charts
+static/generated_charts/*
+
+# User-uploaded profile images
+static/uploads/profile/*
+!static/uploads/profile/default.png

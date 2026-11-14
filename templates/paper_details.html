@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper Details</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+:root{--purple:#6c3cf0;--purple2:#9147ff;--bg:#f6f3ff;--danger:#dc3545}
+body{background:linear-gradient(135deg,#f7f5ff,#f0ecff);min-height:100vh;font-family:Poppins,Arial,sans-serif}.card{border:0;border-radius:24px;box-shadow:0 18px 45px rgba(93,61,200,.12)}
+.topbar{background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;padding:16px 24px;box-shadow:0 8px 25px rgba(108,60,240,.22)}
+.required{color:var(--danger)}.text-primary{color:var(--purple)!important}.form-control,.form-select{border-radius:13px;border-color:#ded7f8;padding:12px 14px}.form-control:focus,.form-select:focus{border-color:var(--purple);box-shadow:0 0 0 .2rem rgba(108,60,240,.14)}
+.form-control.is-invalid,.form-select.is-invalid{border-color:#dc3545;background-image:none}.field-error{display:none;color:var(--danger);font-size:.85rem;margin-top:6px;font-weight:600}.field-error.show{display:block}.form-text{color:#777}.btn-primary{background:linear-gradient(135deg,var(--purple),var(--purple2));border:0;border-radius:12px;padding:12px 22px}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(108,60,240,.25)}.btn-secondary{border:0;border-radius:12px;padding:12px 25px}
+.validation-ok{border-color:#22c55e!important}.duration-note{font-size:.83rem;color:#6c3cf0;font-weight:600;margin-top:5px;min-height:18px}
+</style>
+</head>
+<body>
+
+<aside class="sidebar qpg-shared-sidebar">
+ <div class="logo"><div class="logo-icon"><i class="bi bi-file-earmark-text-fill"></i></div><div class="logo-text"><h4>Smart</h4><p>Question Paper Generator</p></div></div>
+ <ul class="sidebar-menu">
+  <li class=""><a href="/dashboard"><i class="bi bi-house-fill"></i> Dashboard</a></li>
+  <li class="active"><a href="/paper_details"><i class="bi bi-file-earmark-plus"></i> Generate Paper</a></li>
+  <li class=""><a href="/question_bank"><i class="bi bi-book-fill"></i> Question Bank</a></li>
+  <li class=""><a href="/previous_paper"><i class="bi bi-clock-history"></i> Recent Papers</a></li>
+  <li class=""><a href="/papers"><i class="bi bi-folder-fill"></i> View Papers</a></li>
+  <li class=""><a href="/profile"><i class="bi bi-person-fill"></i> Profile</a></li>
+ </ul>
+ <a href="/" class="logout-sidebar"><i class="bi bi-box-arrow-right"></i> Logout</a>
+</aside>
+
+<!-- Shared fixed sidebar and adjustable question figures -->
+<style>
+
+.qpg-shared-sidebar{display:flex;flex-direction:column;background:linear-gradient(180deg,#5B3DF5,#7C4DFF,#D946EF);color:#fff;padding:22px 18px;box-shadow:8px 0 25px rgba(0,0,0,.10)}
+.qpg-shared-sidebar .logo{display:flex;align-items:center;gap:12px;margin:4px 0 32px;position:relative;z-index:1}
+.qpg-shared-sidebar .logo-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,.18);font-size:22px}
+.qpg-shared-sidebar .logo-text h4{font-size:21px;font-weight:800;margin:0;color:#fff}.qpg-shared-sidebar .logo-text p{font-size:10px;margin:2px 0 0;color:#f1eaff}
+.qpg-shared-sidebar .sidebar-menu{list-style:none;padding:0;margin:0;position:relative;z-index:1}.qpg-shared-sidebar .sidebar-menu li{margin:7px 0;border-radius:12px;overflow:hidden}
+.qpg-shared-sidebar .sidebar-menu a,.qpg-shared-sidebar .logout-sidebar{display:flex;align-items:center;gap:13px;padding:13px 14px;color:#fff;text-decoration:none;font-size:14px;font-weight:500;border-radius:12px;transition:background .2s}
+.qpg-shared-sidebar .sidebar-menu a:hover,.qpg-shared-sidebar .sidebar-menu li.active a{background:rgba(255,255,255,.2);color:#fff}
+.qpg-shared-sidebar .sidebar-menu i,.qpg-shared-sidebar .logout-sidebar i{font-size:18px;width:22px;text-align:center}
+.qpg-shared-sidebar .logout-sidebar{margin-top:auto;position:relative;z-index:1;background:rgba(255,255,255,.12)}
+
+.qpg-shared-sidebar{position:fixed!important;left:0!important;top:0!important;bottom:0!important;height:100vh!important;width:260px!important;overflow-y:auto!important;z-index:1050!important}
+body{padding-left:260px!important}
+.qpg-shared-sidebar~*{min-width:0}
+.qpg-figure-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:#65617b;margin:6px 0 12px}
+.qpg-figure-tools input[type=range]{width:150px;accent-color:#6c4cf1}
+.qpg-figure-frame{max-width:100%;overflow:auto}
+.qpg-figure-frame img.qpg-resizable-figure{display:block;height:auto;max-width:100%;object-fit:contain;transition:width .12s ease}
+@media(max-width:992px){body{padding-left:0!important}.qpg-shared-sidebar{left:-260px!important;transition:left .2s}.qpg-shared-sidebar.active{left:0!important}.qpg-shared-sidebar~.main-content{margin-left:0!important;width:100%!important}}
+@media print{.qpg-shared-sidebar,.qpg-figure-tools{display:none!important}body{padding-left:0!important}.qpg-figure-frame img.qpg-resizable-figure{max-width:100%!important}}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+ document.querySelectorAll('img[alt*="graph" i], img[alt*="figure" i], img[alt*="diagram" i], img[alt*="chart" i]').forEach(function(img){
+   if(img.dataset.resizeReady) return; img.dataset.resizeReady='1';
+   var parent=img.parentElement; if(!parent) return;
+   var frame=document.createElement('div'); frame.className='qpg-figure-frame'; parent.insertBefore(frame,img); frame.appendChild(img); img.classList.add('qpg-resizable-figure'); img.style.width='70%';
+   var tools=document.createElement('div'); tools.className='qpg-figure-tools';
+   var label=document.createElement('label'); label.textContent='Figure size';
+   var range=document.createElement('input'); range.type='range'; range.min='25'; range.max='100'; range.step='5'; range.value='70'; range.setAttribute('aria-label','Resize figure');
+   var value=document.createElement('span'); value.textContent='70%';
+   range.addEventListener('input',function(){img.style.width=range.value+'%';value.textContent=range.value+'%';});
+   tools.append(label,range,value); frame.parentElement.insertBefore(tools,frame);
+ });
+});
+</script>
+
+<div class="topbar"><div class="container-fluid d-flex justify-content-between align-items-center"><strong><i class="bi bi-file-earmark-text-fill"></i> Smart Question Paper Generator</strong><a href="/dashboard" class="btn btn-light btn-sm">Dashboard</a></div></div>
+<div class="container py-5"><div class="card"><div class="card-body p-4 p-md-5">
+<h2 class="text-primary mb-4">Paper Details</h2>
+{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+<form method="POST" action="/paper_structure" enctype="multipart/form-data" id="paperDetailsForm" novalidate>
+<div class="row">
+{% macro field(name,label,placeholder='') %}<div class="col-md-6 mb-4"><label class="form-label fw-semibold">{{ label }} <span class="required">*</span></label><input type="text" name="{{ name }}" id="{{ name }}" class="form-control" value="{{ form_data.get(name,'') if form_data else '' }}" placeholder="{{ placeholder }}" required><div class="field-error" id="{{ name }}Error">{% if error_field==name %}{{ error }}{% endif %}</div></div>{% endmacro %}
+{{ field('university','University Name','Enter University Name') }}{{ field('exam_title','Examination Title','Enter Examination Title') }}{{ field('qp_code','QP Code','Enter QP Code') }}{{ field('subject','Subject','Enter Subject') }}
+</div>
+<div class="row">
+<div class="col-md-4 mb-4"><label class="form-label fw-semibold">Exam Date <span class="required">*</span></label><input type="date" name="exam_date" id="exam_date" class="form-control" value="{{ form_data.get('exam_date','') if form_data else '' }}" required><div class="field-error" id="exam_dateError">{% if error_field=='exam_date' %}{{ error }}{% endif %}</div></div>
+<div class="col-md-4 mb-4"><label class="form-label fw-semibold">Start Time <span class="required">*</span></label><input type="time" name="start_time" id="start_time" class="form-control" value="{{ form_data.get('start_time','') if form_data else '' }}" required><div class="duration-note" id="start_timeNote"></div><div class="field-error" id="start_timeError">{% if error_field=='start_time' %}{{ error }}{% endif %}</div></div>
+<div class="col-md-4 mb-4"><label class="form-label fw-semibold">End Time <span class="required">*</span></label><input type="time" name="end_time" id="end_time" class="form-control" value="{{ form_data.get('end_time','') if form_data else '' }}" required><div class="duration-note" id="end_timeNote">Minimum exam duration: 3 hours.</div><div class="field-error" id="end_timeError">{% if error_field=='end_time' %}{{ error }}{% endif %}</div></div>
+</div>
+<div class="row">
+<div class="col-md-6 mb-4"><label class="form-label fw-semibold">Total Marks <span class="required">*</span></label><input type="text" name="marks" id="marks" class="form-control" inputmode="numeric" maxlength="3" value="{{ form_data.get('marks','') if form_data else '' }}" placeholder="1 - 100" required><div class="form-text">Only numbers are allowed. Maximum: 100.</div><div class="field-error" id="marksError">{% if error_field=='marks' %}{{ error }}{% endif %}</div></div>
+<div class="col-md-6 mb-4"><label class="form-label fw-semibold">Upload Syllabus PDF</label><input type="file" name="syllabus_pdf" accept=".pdf" class="form-control"></div>
+</div>
+<div class="mb-4"><label class="form-label fw-semibold">Question Pattern</label><select name="attempt" class="form-select"><option value="all">All Questions are Compulsory</option><option value="4">Attempt Any 4 Questions</option><option value="5">Attempt Any 5 Questions</option><option value="6">Attempt Any 6 Questions</option><option value="7">Attempt Any 7 Questions</option><option value="8">Attempt Any 8 Questions</option></select></div>
+<div class="mb-4"><label class="form-label fw-semibold">Instructions</label><textarea name="instructions" rows="5" class="form-control">{{ form_data.get('instructions','1. All questions are compulsory.\n2. Figures to the right indicate full marks.') if form_data else '1. All questions are compulsory.\n2. Figures to the right indicate full marks.' }}</textarea></div>
+<div class="d-flex justify-content-between"><a href="/dashboard" class="btn btn-secondary">Back</a><button type="submit" class="btn btn-primary">Next: Create Structure <i class="bi bi-arrow-right"></i></button></div>
+</form></div></div></div>
+<script>
+const onlyLetters=['university','exam_title','subject'];
+const rules={
+ university:'University Name must contain only letters and spaces.',
+ exam_title:'Examination Title must contain only letters and spaces.',
+ subject:'Subject must contain only letters and spaces.',
+ qp_code:'QP Code may contain only letters, numbers and hyphens.'
+};
+function el(id){return document.getElementById(id)}
+function clearError(id){const e=el(id),m=el(id+'Error');if(e)e.classList.remove('is-invalid','validation-ok');if(m){m.textContent='';m.classList.remove('show')}}
+function showError(id,msg){const e=el(id),m=el(id+'Error');if(e)e.classList.add('is-invalid');if(e)e.classList.remove('validation-ok');if(m){m.textContent=msg;m.classList.add('show')}}
+function showOk(id){const e=el(id),m=el(id+'Error');if(e){e.classList.remove('is-invalid');e.classList.add('validation-ok')}if(m){m.textContent='';m.classList.remove('show')}}
+function validateText(id){const v=el(id).value.trim();if(!v){showError(id,'This field is required.');return false}if(!/^[A-Za-z ]+$/.test(v)){showError(id,rules[id]);return false}showOk(id);return true}
+function validateCode(){const v=el('qp_code').value.trim();if(!v){showError('qp_code','QP Code is required.');return false}if(!/^[A-Za-z0-9-]+$/.test(v)){showError('qp_code',rules.qp_code);return false}showOk('qp_code');return true}
+function validateMarks(){const v=el('marks').value.trim();if(!v){showError('marks','Total Marks is required.');return false}if(!/^\d+$/.test(v)){showError('marks','Total Marks must contain numbers only.');return false}const n=Number(v);if(n<1){showError('marks','Total Marks must be greater than 0.');return false}if(n>100){showError('marks','Total Marks cannot be greater than 100.');return false}showOk('marks');return true}
+function validateDate(){const v=el('exam_date').value;if(!v){showError('exam_date','Please select an exam date.');return false}const chosen=new Date(v+'T00:00:00');const today=new Date();today.setHours(0,0,0,0);if(chosen<=today){showError('exam_date',"Exam date must be greater than today's date.");return false}showOk('exam_date');return true}
+function validateTimes(){const st=el('start_time').value,et=el('end_time').value;const note=el('end_timeNote');clearError('start_time');clearError('end_time');if(!st){return false}if(!et){showOk('start_time');return false}const [sh,sm]=st.split(':').map(Number),[eh,em]=et.split(':').map(Number);const diff=(eh*60+em)-(sh*60+sm);if(diff<=0){showError('end_time','End time must be after start time.');note.textContent='End time must be later than start time.';return false}if(diff<180){showError('end_time','Exam duration must be at least 3 hours.');note.textContent='Current duration: '+Math.floor(diff/60)+'h '+(diff%60)+'m — minimum is 3 hours.';return false}showOk('start_time');showOk('end_time');note.textContent='Duration: '+Math.floor(diff/60)+'h '+(diff%60)+'m ✓';return true}
+onlyLetters.forEach(id=>{el(id).addEventListener('input',()=>{const before=el(id).value;const clean=before.replace(/[^A-Za-z ]/g,'');if(before!==clean)el(id).value=clean;validateText(id)});el(id).addEventListener('blur',()=>validateText(id))});
+el('qp_code').addEventListener('input',()=>{const before=el('qp_code').value,clean=before.replace(/[^A-Za-z0-9-]/g,'');if(before!==clean)el('qp_code').value=clean;validateCode()});el('qp_code').addEventListener('blur',validateCode);
+el('marks').addEventListener('input',()=>{const before=el('marks').value,clean=before.replace(/\D/g,'').slice(0,3);if(before!==clean)el('marks').value=clean;validateMarks()});el('marks').addEventListener('blur',validateMarks);
+el('exam_date').addEventListener('change',validateDate);el('exam_date').addEventListener('blur',validateDate);
+el('start_time').addEventListener('input',validateTimes);el('start_time').addEventListener('change',validateTimes);el('end_time').addEventListener('input',validateTimes);el('end_time').addEventListener('change',validateTimes);
+const minDate=new Date();minDate.setDate(minDate.getDate()+1);el('exam_date').min=minDate.toISOString().split('T')[0];
+function validatePaperDetails(){const ok1=validateText('university'),ok2=validateText('exam_title'),ok3=validateCode(),ok4=validateText('subject'),ok5=validateDate(),ok6=validateTimes(),ok7=validateMarks();return ok1&&ok2&&ok3&&ok4&&ok5&&ok6&&ok7}
+el('paperDetailsForm').addEventListener('submit',function(e){if(!validatePaperDetails()){e.preventDefault();const bad=document.querySelector('.is-invalid');if(bad)bad.focus()}});
+</script>
+</body></html>

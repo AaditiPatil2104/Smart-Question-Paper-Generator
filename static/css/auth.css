@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+:root{--p:#6c4cf1;--p2:#8b5cf6;--p3:#d946ef;--bg:#f5f3ff;--ink:#272343}
+*{box-sizing:border-box;font-family:'Poppins',sans-serif}
+body.auth-page{margin:0;min-height:100vh;background:radial-gradient(circle at top right,#eee7ff 0,#f7f5ff 38%,#f4f7fc 100%);color:var(--ink)}
+.auth-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px;position:relative;overflow:hidden}
+.auth-shell:before,.auth-shell:after{content:"";position:absolute;border-radius:50%;filter:blur(2px);z-index:0}.auth-shell:before{width:340px;height:340px;background:rgba(108,76,241,.12);left:-150px;top:-100px}.auth-shell:after{width:300px;height:300px;background:rgba(217,70,239,.10);right:-120px;bottom:-100px}
+.auth-card{width:min(470px,100%);background:rgba(255,255,255,.96);border:1px solid #ece7ff;border-radius:28px;box-shadow:0 24px 70px rgba(91,61,245,.16);padding:34px;position:relative;z-index:1;transition:.3s ease}
+.auth-card:hover{transform:translateY(-4px);box-shadow:0 30px 80px rgba(91,61,245,.22)}
+.auth-icon{width:64px;height:64px;margin:0 auto 14px;border-radius:20px;background:linear-gradient(135deg,var(--p),var(--p3));color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 12px 25px rgba(108,76,241,.25)}
+.auth-title{text-align:center;font-weight:700;color:#4c36b8;margin:0}.auth-subtitle{text-align:center;color:#8580a0;margin:7px 0 25px;font-size:14px}
+.auth-card .form-label{font-weight:600;color:#4b4766}.auth-card .form-control{border:1px solid #e4dff8;border-radius:13px;padding:11px 13px}.auth-card .form-control:focus{border-color:var(--p);box-shadow:0 0 0 .2rem rgba(108,76,241,.12)}
+.auth-btn{border:0;border-radius:13px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font-weight:600;padding:12px;box-shadow:0 10px 20px rgba(108,76,241,.2);transition:.25s}.auth-btn:hover{color:#fff;transform:translateY(-2px);box-shadow:0 15px 28px rgba(108,76,241,.28)}
+.auth-link{color:#6545d9;text-decoration:none;font-weight:600}.auth-link:hover{color:#4f2bc5;text-decoration:underline}.auth-footer{text-align:center;margin-top:18px;color:#77738e;font-size:14px}.auth-back{display:flex;justify-content:center;margin-top:24px}.auth-back a{color:#6550bf;text-decoration:none;font-weight:600;padding:9px 18px;border-radius:12px;background:#f2efff;transition:.25s}.auth-back a:hover{background:#e7e0ff;transform:translateY(-2px)}
+.auth-alert{border-radius:13px;border:0}

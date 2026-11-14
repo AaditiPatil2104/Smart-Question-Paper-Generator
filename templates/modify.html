@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Modify Question Paper</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+    background:#f4f7fc;
+}
+
+.paper{
+    background:#fff;
+    padding:30px;
+    border-radius:10px;
+    border:1px solid #ddd;
+}
+
+.section-card{
+    margin-top:25px;
+    padding:20px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    background:#fafafa;
+}
+
+.question-card{
+    margin-top:15px;
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    background:white;
+}
+
+.sub-card{
+    margin-top:12px;
+    margin-left:25px;
+    padding:15px;
+    border-left:4px solid #0d6efd;
+    background:#f9fbff;
+}
+
+textarea{
+    resize:vertical;
+}
+
+.section-header{
+    border-bottom:1px solid #ddd;
+    padding-bottom:15px;
+    margin-bottom:15px;
+}
+
+.delete-btn{
+    float:right;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container mt-4 mb-5">
+
+<div class="paper shadow">
+
+<h2 class="text-primary mb-4">
+Modify Question Paper
+</h2>
+
+<form action="{{ url_for('save_modify') }}" method="POST">
+
+<input
+type="hidden"
+name="paper_id"
+value="{{ paper['id'] }}">
+
+<h4 class="mb-3">
+Paper Details
+</h4>
+
+<div class="row">
+
+<div class="col-md-6">
+
+<label class="form-label">
+University
+</label>
+
+<input
+type="text"
+class="form-control"
+name="university"
+value="{{ paper['university'] }}">
+
+</div>
+
+<div class="col-md-6">
+
+<label class="form-label">
+Exam Title
+</label>
+
+<input
+type="text"
+class="form-control"
+name="exam_title"
+value="{{ paper['exam_title'] }}">
+
+</div>
+
+</div>
+
+<div class="row mt-3">
+
+<div class="col-md-4">
+
+<label class="form-label">
+QP Code
+</label>
+
+<input
+type="text"
+class="form-control"
+name="qp_code"
+value="{{ paper['qp_code'] }}">
+
+</div>
+
+<div class="col-md-4">
+
+<label class="form-label">
+Subject
+</label>
+
+<input
+type="text"
+class="form-control"
+name="subject"
+value="{{ paper['subject'] }}">
+
+</div>
+
+<div class="col-md-4">
+
+<label class="form-label">
+Total Marks
+</label>
+
+<input
+type="number"
+class="form-control"
+name="marks"
+value="{{ paper['marks'] }}">
+
+</div>
+
+</div>
+
+<div class="row mt-3">
+
+<div class="col-md-4">
+
+<label class="form-label">
+Date
+</label>
+
+<input
+type="date"
+class="form-control"
+name="exam_date"
+value="{{ paper['exam_date'] }}">
+
+</div>
+
+<div class="col-md-4">
+
+<label class="form-label">
+Start Time
+</label>
+
+<input
+type="time"
+class="form-control"
+name="start_time"
+value="{{ paper['start_time'] }}">
+
+</div>
+
+<div class="col-md-4">
+
+<label class="form-label">
+End Time
+</label>
+
+<input
+type="time"
+class="form-control"
+name="end_time"
+value="{{ paper['end_time'] }}">
+
+</div>
+
+</div>
+
+<div class="mt-3">
+
+<label class="form-label">
+Instructions
+</label>
+
+<textarea
+class="form-control"
+rows="5"
+name="instructions">{{ paper['instructions'] }}</textarea>
+
+</div>
+
+<hr class="my-4">
+
+<h3 class="text-primary">
+Questions
+</h3>
+{% for sec in sections %}
+
+{% set sec_index = loop.index0 %}
+
+<div
+class="section-card"
+data-section="{{ sec_index }}"
+data-type="{{ sec.type }}">
+<input
+type="hidden"
+name="section_index"
+value="{{ sec_index }}">
+
+    <div class="section-header">
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <label><b>Section Title</b></label>
+
+                <input
+                type="text"
+                class="form-control"
+                name="section_title"
+                value="{{ sec.title }}">
+
+            </div>
+
+            <div class="col-md-2">
+
+                <label>Attempt</label>
+
+                <input
+                type="number"
+                class="form-control"
+                name="attempt_{{ sec_index }}"
+                value="{{ sec.attempt }}">
+
+            </div>
+
+            <div class="col-md-2">
+
+                <label>Marks</label>
+
+                <input
+                type="number"
+                class="form-control"
+                name="section_marks_{{ sec_index }}"
+                value="{{ sec.marks }}">
+
+            </div>
+
+            <div class="col-md-2">
+
+                <label>Type</label>
+
+                <input
+                readonly
+                class="form-control"
+                name="section_type_{{ sec_index }}"
+                value="{{ sec.type }}">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% for q in sec.questions %}
+
+    <div class="question-card">
+
+        {% if q.subparts %}
+
+        <h6 class="text-primary">
+            Split Question
+        </h6>
+
+        {% for sub in q.subparts %}
+
+        <div class="sub-card">
+
+            <label>{{ sub.label }}) Question</label>
+
+            <textarea
+            class="form-control"
+            rows="3"
+            name="sub_question">{{ sub.question }}</textarea>
+
+            <div class="row mt-2">
+
+                <div class="col-md-3">
+
+                    <label>Marks</label>
+
+                    <input
+                    type="number"
+                    class="form-control"
+                    name="sub_marks"
+                    value="{{ sub.marks }}">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+        {% else %}
+
+        <label>Question</label>
+
+        <textarea
+        class="form-control"
+        rows="3"
+        <textarea
+class="form-control"
+rows="3"
+name="question_{{ sec_index }}">
+{{ q.question }}
+</textarea>>{{ q.question }}</textarea>
+
+
+        {% if q.options %}
+
+        <div class="row mt-3">
+
+            <div class="col-md-6">
+
+                <label>Option A</label>
+
+                <input
+                class="form-control"
+                name="option_a"
+                value="{{ q.options[0] }}">
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label>Option B</label>
+
+                <input
+                class="form-control"
+                name="option_b"
+                value="{{ q.options[1] }}">
+
+            </div>
+
+        </div>
+
+        <div class="row mt-2">
+
+            <div class="col-md-6">
+
+                <label>Option C</label>
+
+                <input
+                class="form-control"
+                name="option_c"
+                value="{{ q.options[2] }}">
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label>Option D</label>
+
+                <input
+                class="form-control"
+                name="option_d"
+                value="{{ q.options[3] }}">
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+        <div class="row mt-3">
+
+            <div class="col-md-3">
+
+                <label>Marks</label>
+
+                <input
+                type="number"
+                class="form-control"
+                name="question_marks_{{ sec_index }}"
+                value="{{ q.marks if q.marks else sec.marks }}">
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+        <div class="mt-3 text-end">
+
+            <button
+            type="button"
+            class="btn btn-danger btn-sm remove-question">
+                🗑 Delete
+            </button>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+
+    <div class="mt-4">
+
+        {% if sec.type == "Long Answer" %}
+
+        <div class="dropdown">
+
+            <button
+            class="btn btn-success dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown">
+
+                ➕ Add
+
+            </button>
+
+            <ul class="dropdown-menu">
+
+                <li>
+
+                    <a
+                    class="dropdown-item add-long"
+                    href="#">
+
+                        Long Question
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a
+                    class="dropdown-item add-split"
+                    href="#">
+
+                        Split Question (A/B)
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+        {% elif sec.type == "Short Notes" %}
+
+        <button
+        type="button"
+        class="btn btn-success add-short">
+
+            ➕ Add Short Note
+
+        </button>
+
+        {% elif sec.type == "MCQ" %}
+
+        <button
+        type="button"
+        class="btn btn-success add-mcq">
+
+            ➕ Add MCQ
+
+        </button>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+<hr>
+
+<div class="text-center mt-4">
+
+<button
+type="submit"
+class="btn btn-primary btn-lg">
+
+Save Changes
+
+</button>
+
+<a
+href="/papers"
+class="btn btn-secondary btn-lg">
+
+Cancel
+
+</a>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+// ================= DELETE QUESTION =================
+
+document.addEventListener("click", function(e){
+
+    if(e.target.classList.contains("remove-question")){
+
+        if(confirm("Delete this question?")){
+
+            e.target.closest(".question-card").remove();
+
+        }
+
+    }
+
+});
+
+// ================= ADD LONG QUESTION =================
+
+document.addEventListener("click",function(e){
+
+    if(e.target.classList.contains("add-long")){
+
+        e.preventDefault();
+
+        let section=e.target.closest(".section-card");
+
+        let box=document.createElement("div");
+
+        box.className="question-card";
+
+        box.innerHTML=`
+
+<label>Question</label>
+
+<textarea
+class="form-control"
+rows="3"
+name="question"></textarea>
+
+<div class="row mt-3">
+
+<div class="col-md-3">
+
+<label>Marks</label>
+
+<input
+type="number"
+class="form-control"
+name="question_marks"
+value="12">
+
+</div>
+
+</div>
+
+<div class="mt-3 text-end">
+
+<button
+type="button"
+class="btn btn-danger btn-sm remove-question">
+
+🗑 Delete
+
+</button>
+
+</div>
+
+`;
+
+        section.querySelector(".mt-4").before(box);
+
+    }
+
+});
+
+// ================= ADD SPLIT QUESTION =================
+
+document.addEventListener("click",function(e){
+
+    if(e.target.classList.contains("add-split")){
+
+        e.preventDefault();
+
+        let section=e.target.closest(".section-card");
+
+        let box=document.createElement("div");
+
+        box.className="question-card";
+
+        box.innerHTML=`
+
+<h6 class="text-primary">
+
+Split Question
+
+</h6>
+
+<div class="sub-card">
+
+<label>A) Question</label>
+
+<textarea
+class="form-control"
+rows="3"
+name="sub_question_{{ sec_index }}"></textarea>
+
+<div class="row mt-2">
+
+<div class="col-md-3">
+
+<label>Marks</label>
+
+<input
+type="number"
+class="form-control"
+name="sub_marks_{{ sec_index }}"
+value="6">
+
+</div>
+
+</div>
+
+</div>
+
+<div class="sub-card">
+
+<label>B) Question</label>
+
+<textarea
+class="form-control"
+rows="3"
+name="sub_question"></textarea>
+
+<div class="row mt-2">
+
+<div class="col-md-3">
+
+<label>Marks</label>
+
+<input
+type="number"
+class="form-control"
+name="sub_marks"
+value="6">
+
+</div>
+
+</div>
+
+</div>
+
+<div class="mt-3 text-end">
+
+<button
+type="button"
+class="btn btn-danger btn-sm remove-question">
+
+🗑 Delete
+
+</button>
+
+</div>
+
+`;
+
+        section.querySelector(".mt-4").before(box);
+
+    }
+
+});
+
+// ================= ADD SHORT NOTE =================
+
+document.addEventListener("click",function(e){
+
+    if(e.target.classList.contains("add-short")){
+
+        let section=e.target.closest(".section-card");
+
+        let box=document.createElement("div");
+
+        box.className="question-card";
+
+        box.innerHTML=`
+
+<label>Question</label>
+
+<textarea
+class="form-control"
+rows="2"
+name="question"></textarea>
+
+<div class="row mt-3">
+
+<div class="col-md-3">
+
+<label>Marks</label>
+
+<input
+type="number"
+class="form-control"
+name="question_marks"
+value="4">
+
+</div>
+
+</div>
+
+<div class="mt-3 text-end">
+
+<button
+type="button"
+class="btn btn-danger btn-sm remove-question">
+
+🗑 Delete
+
+</button>
+
+</div>
+
+`;
+
+        section.querySelector(".mt-4").before(box);
+
+    }
+
+});
+
+// ================= ADD MCQ =================
+
+document.addEventListener("click",function(e){
+
+    if(e.target.classList.contains("add-mcq")){
+
+        let section=e.target.closest(".section-card");
+
+        let box=document.createElement("div");
+
+        box.className="question-card";
+
+        box.innerHTML=`
+
+<label>Question</label>
+
+<textarea
+class="form-control"
+rows="2"
+name="question"></textarea>
+
+<div class="row mt-3">
+
+<div class="col-md-6">
+
+<label>Option A</label>
+
+<input
+class="form-control"
+name="option_a_{{ sec_index }}">
+
+</div>
+
+<div class="col-md-6">
+
+<label>Option B</label>
+
+<input
+class="form-control"
+name="option_b_{{ sec_index }}">
+
+</div>
+
+</div>
+
+<div class="row mt-2">
+
+<div class="col-md-6">
+
+<label>Option C</label>
+
+<input
+class="form-control"
+name="option_c_{{ sec_index }}">
+
+</div>
+
+<div class="col-md-6">
+
+<label>Option D</label>
+
+<input
+class="form-control"
+name="option_d_{{ sec_index }}">
+
+</div>
+
+</div>
+
+<div class="row mt-3">
+
+<div class="col-md-3">
+
+<label>Marks</label>
+
+<input
+type="number"
+class="form-control"
+name="question_marks"
+value="1">
+
+</div>
+
+</div>
+
+<div class="mt-3 text-end">
+
+<button
+type="button"
+class="btn btn-danger btn-sm remove-question">
+
+🗑 Delete
+
+</button>
+
+</div>
+
+`;
+
+        section.querySelector(".mt-4").before(box);
+
+    }
+
+});
+
+// ================= SAVE CONFIRM =================
+
+document.querySelector("form").addEventListener("submit",function(e){
+
+    if(!confirm("Save all modifications?")){
+
+        e.preventDefault();
+
+    }
+
+});
+
+</script>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

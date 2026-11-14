@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<title>View Question Paper</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+    background:#f4f7fc;
+}
+
+.paper{
+    background:white;
+    padding:40px;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+.section-title{
+    margin-top:30px;
+    margin-bottom:10px;
+    font-weight:bold;
+    font-size:22px;
+    color:#0d6efd;
+}
+
+.attempt{
+    font-size:14px;
+    color:#555;
+    margin-bottom:20px;
+}
+
+.question{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:18px;
+}
+
+.question-text{
+    width:92%;
+}
+
+.question-marks{
+    width:8%;
+    text-align:right;
+    font-weight:bold;
+}
+
+.option{
+    margin-left:35px;
+    margin-top:6px;
+}
+.sub-question{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin:8px 0;
+}
+
+.sub-question .question-text{
+    width:92%;
+}
+
+.sub-question .question-marks{
+    width:8%;
+    text-align:right;
+    font-weight:bold;
+    white-space:nowrap;
+}
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+<aside class="sidebar qpg-shared-sidebar">
+ <div class="logo"><div class="logo-icon"><i class="bi bi-file-earmark-text-fill"></i></div><div class="logo-text"><h4>Smart</h4><p>Question Paper Generator</p></div></div>
+ <ul class="sidebar-menu">
+  <li class=""><a href="/dashboard"><i class="bi bi-house-fill"></i> Dashboard</a></li>
+  <li class=""><a href="/paper_details"><i class="bi bi-file-earmark-plus"></i> Generate Paper</a></li>
+  <li class=""><a href="/question_bank"><i class="bi bi-book-fill"></i> Question Bank</a></li>
+  <li class=""><a href="/previous_paper"><i class="bi bi-clock-history"></i> Recent Papers</a></li>
+  <li class="active"><a href="/papers"><i class="bi bi-folder-fill"></i> View Papers</a></li>
+  <li class=""><a href="/profile"><i class="bi bi-person-fill"></i> Profile</a></li>
+ </ul>
+ <a href="/" class="logout-sidebar"><i class="bi bi-box-arrow-right"></i> Logout</a>
+</aside>
+
+<!-- Shared fixed sidebar and adjustable question figures -->
+<style>
+
+.qpg-shared-sidebar{display:flex;flex-direction:column;background:linear-gradient(180deg,#5B3DF5,#7C4DFF,#D946EF);color:#fff;padding:22px 18px;box-shadow:8px 0 25px rgba(0,0,0,.10)}
+.qpg-shared-sidebar .logo{display:flex;align-items:center;gap:12px;margin:4px 0 32px;position:relative;z-index:1}
+.qpg-shared-sidebar .logo-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,.18);font-size:22px}
+.qpg-shared-sidebar .logo-text h4{font-size:21px;font-weight:800;margin:0;color:#fff}.qpg-shared-sidebar .logo-text p{font-size:10px;margin:2px 0 0;color:#f1eaff}
+.qpg-shared-sidebar .sidebar-menu{list-style:none;padding:0;margin:0;position:relative;z-index:1}.qpg-shared-sidebar .sidebar-menu li{margin:7px 0;border-radius:12px;overflow:hidden}
+.qpg-shared-sidebar .sidebar-menu a,.qpg-shared-sidebar .logout-sidebar{display:flex;align-items:center;gap:13px;padding:13px 14px;color:#fff;text-decoration:none;font-size:14px;font-weight:500;border-radius:12px;transition:background .2s}
+.qpg-shared-sidebar .sidebar-menu a:hover,.qpg-shared-sidebar .sidebar-menu li.active a{background:rgba(255,255,255,.2);color:#fff}
+.qpg-shared-sidebar .sidebar-menu i,.qpg-shared-sidebar .logout-sidebar i{font-size:18px;width:22px;text-align:center}
+.qpg-shared-sidebar .logout-sidebar{margin-top:auto;position:relative;z-index:1;background:rgba(255,255,255,.12)}
+
+.qpg-shared-sidebar{position:fixed!important;left:0!important;top:0!important;bottom:0!important;height:100vh!important;width:260px!important;overflow-y:auto!important;z-index:1050!important}
+body{padding-left:260px!important}
+.qpg-shared-sidebar~*{min-width:0}
+.qpg-figure-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:#65617b;margin:6px 0 12px}
+.qpg-figure-tools input[type=range]{width:150px;accent-color:#6c4cf1}
+.qpg-figure-frame{max-width:100%;overflow:auto}
+.qpg-figure-frame img.qpg-resizable-figure{display:block;height:auto;max-width:100%;object-fit:contain;transition:width .12s ease}
+@media(max-width:992px){body{padding-left:0!important}.qpg-shared-sidebar{left:-260px!important;transition:left .2s}.qpg-shared-sidebar.active{left:0!important}.qpg-shared-sidebar~.main-content{margin-left:0!important;width:100%!important}}
+@media print{.qpg-shared-sidebar,.qpg-figure-tools{display:none!important}body{padding-left:0!important}.qpg-figure-frame img.qpg-resizable-figure{max-width:100%!important}}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+ document.querySelectorAll('img[alt*="graph" i], img[alt*="figure" i], img[alt*="diagram" i], img[alt*="chart" i]').forEach(function(img){
+   if(img.dataset.resizeReady) return; img.dataset.resizeReady='1';
+   var parent=img.parentElement; if(!parent) return;
+   var frame=document.createElement('div'); frame.className='qpg-figure-frame'; parent.insertBefore(frame,img); frame.appendChild(img); img.classList.add('qpg-resizable-figure'); img.style.width='70%';
+   var tools=document.createElement('div'); tools.className='qpg-figure-tools';
+   var label=document.createElement('label'); label.textContent='Figure size';
+   var range=document.createElement('input'); range.type='range'; range.min='25'; range.max='100'; range.step='5'; range.value='70'; range.setAttribute('aria-label','Resize figure');
+   var value=document.createElement('span'); value.textContent='70%';
+   range.addEventListener('input',function(){img.style.width=range.value+'%';value.textContent=range.value+'%';});
+   tools.append(label,range,value); frame.parentElement.insertBefore(tools,frame);
+ });
+});
+</script>
+
+
+<div class="container mt-4 mb-5">
+
+<div class="paper shadow">
+
+<!-- ================= HEADER ================= -->
+
+<h3 class="text-center fw-bold">
+{{ paper["university"] }}
+</h3>
+
+<h5 class="text-center mb-4">
+{{ paper["exam_title"] }}
+</h5>
+
+<hr>
+
+<div class="row">
+
+<div class="col-md-6">
+<b>QP Code :</b> {{ paper["qp_code"] }}
+</div>
+
+<div class="col-md-6 text-end">
+<b>Date :</b> {{ paper["exam_date"] }}
+</div>
+
+</div>
+
+<div class="row mt-2">
+
+<div class="col-md-6">
+<b>Subject :</b> {{ paper["subject"] }}
+</div>
+
+<div class="col-md-6 text-end">
+<b>Time :</b> {{ paper["start_time"]|time12 }} - {{ paper["end_time"]|time12 }}
+</div>
+
+</div>
+
+<div class="row mt-2">
+
+<div class="col-md-6">
+<b>Total Marks :</b> {{ paper["marks"] }}
+</div>
+
+</div>
+
+<hr>
+
+<h5>Instructions</h5>
+
+{% if paper["instructions"] %}
+
+<ol>
+
+{% for line in paper["instructions"].split('\n') %}
+{% if line.strip() %}
+<li>{{ line }}</li>
+{% endif %}
+{% endfor %}
+
+</ol>
+
+{% else %}
+
+<ol>
+<li>All questions are compulsory.</li>
+<li>Figures to the right indicate full marks.</li>
+</ol>
+
+{% endif %}
+
+<hr>
+
+{% set qno = namespace(value=1) %}
+
+{% if sections %}
+
+    {% for sec in sections %}
+
+    <div class="section-title">
+        {{ sec.title }}
+    </div>
+
+    <div class="attempt">
+        Attempt any {{ sec.attempt }} question(s) &nbsp; | &nbsp; Section Marks: {{ sec.attempt * sec.marks }}
+    </div>
+
+    <!-- ================= SHORT NOTES ================= -->
+
+    {% if sec.type == "Short Notes" %}
+
+    <div class="question">
+
+        <div class="question-text">
+
+            <b>Q{{ qno.value }}.</b>
+
+            <div class="option mt-2">
+
+                {% for q in sec.questions %}
+
+                <div class="mb-3">
+                    <b>{{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[loop.index0] }})</b>
+                    {{ q.question }}
+                    {% if q.chart_image %}
+                    <div class="mt-2 ms-3"><img src="{{ url_for('static', filename=q.chart_image.replace('\\','/').replace('static/','')) if q.chart_image.startswith('static/') else url_for('static', filename=q.chart_image.replace('\\','/')) }}" alt="Statistics graph" style="max-width:100%;height:auto;border:1px solid #ddd;border-radius:8px;padding:6px;background:#fff;"></div>
+                    {% endif %}
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <div class="question-marks">
+    [{{ sec.marks * sec.attempt }}]
+</div>
+    </div>
+
+    {% set qno.value = qno.value + 1 %}
+
+    <!-- ================= OTHER QUESTION TYPES ================= -->
+
+    {% else %}
+
+        {% for q in sec.questions %}
+
+        <div class="question">
+
+            <div class="question-text">
+
+                <b>Q{{ qno.value }}.</b>
+
+                {% if q.subparts %}
+
+                    {% for sub in q.subparts %}
+
+                    <div class="option">
+
+                        <b>{{ sub.label }})</b>
+                        {{ sub.question }}
+
+                        <span class="float-end">
+                            [{{ sub.marks }}]
+                        </span>
+
+                        {% if sub.options %}
+
+                        <div class="ms-4 mt-2">
+                            <div>A) {{ sub.options[0] }}</div>
+                            <div>B) {{ sub.options[1] }}</div>
+                            <div>C) {{ sub.options[2] }}</div>
+                            <div>D) {{ sub.options[3] }}</div>
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    {{ q.question }}
+
+                    {% if q.chart_image %}
+                    <div class="mt-3 mb-3">
+                        <img src="{{ url_for('static', filename=q.chart_image.replace('\\','/').replace('static/','')) if q.chart_image.startswith('static/') else url_for('static', filename=q.chart_image.replace('\\','/')) }}" alt="Statistics graph" style="max-width:100%;height:auto;border:1px solid #ddd;border-radius:8px;padding:8px;background:#fff;">
+                    </div>
+                    {% endif %}
+
+                    {% if q.options %}
+
+                    <div class="option">
+                        <div>A) {{ q.options[0] }}</div>
+                        <div>B) {{ q.options[1] }}</div>
+                        <div>C) {{ q.options[2] }}</div>
+                        <div>D) {{ q.options[3] }}</div>
+                    </div>
+
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+
+            {% if not q.subparts %}
+            <div class="question-marks">
+                [{{ q.marks or sec.marks or 1 }}]
+            </div>
+            {% endif %}
+
+        </div>
+
+        {% set qno.value = qno.value + 1 %}
+
+        {% endfor %}
+
+    {% endif %}
+
+    {% endfor %}
+
+{% else %}
+
+<!-- ================= OLD FORMAT ================= -->
+
+{% for q in questions %}
+
+<div class="question">
+
+    <div class="question-text">
+
+        <b>Q{{ qno.value }}.</b>
+
+        {% if q.subparts %}
+
+            {% for sub in q.subparts %}
+
+            <div class="sub-question">
+
+    <div class="question-text">
+        <b>{{ sub.label }})</b>
+        {{ sub.question }}
+
+        {% if sub.options %}
+        <div class="ms-4 mt-2">
+            <div>A) {{ sub.options[0] }}</div>
+            <div>B) {{ sub.options[1] }}</div>
+            <div>C) {{ sub.options[2] }}</div>
+            <div>D) {{ sub.options[3] }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="question-marks">
+        [{{ sub.marks }}]
+    </div>
+
+</div>
+
+            {% endfor %}
+
+        {% else %}
+
+            {{ q.question }}
+
+            {% if q.options %}
+
+            <div class="option">
+                <div>A) {{ q.options[0] }}</div>
+                <div>B) {{ q.options[1] }}</div>
+                <div>C) {{ q.options[2] }}</div>
+                <div>D) {{ q.options[3] }}</div>
+            </div>
+
+            {% endif %}
+
+        {% endif %}
+
+    </div>
+
+    {% if not q.subparts %}
+    <div class="question-marks">
+        [{{ q.marks or 1 }}]
+    </div>
+    {% endif %}
+
+</div>
+
+{% set qno.value = qno.value + 1 %}
+
+{% endfor %}
+
+{% endif %}
+
+<hr>
+
+<!-- ================= ACTION BUTTONS ================= -->
+
+<div class="text-center mt-4">
+
+    <a href="{{ '/hod/papers' if hod_view else '/papers' }}" class="btn btn-secondary">
+        Back
+    </a>
+
+    
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

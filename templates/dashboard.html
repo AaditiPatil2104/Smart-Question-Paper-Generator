@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <!-- Chatbot CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/ai_assistant.css') }}">
+
+
+<style>
+.dashboard-layout{min-height:100vh;align-items:stretch}.dashboard-layout>.sidebar{position:fixed!important;top:0!important;left:0!important;bottom:0!important;height:100vh!important;overflow-y:auto!important;z-index:1050!important}.dashboard-layout>.main-content{margin-left:260px;width:calc(100% - 260px);min-width:0}@media(max-width:992px){.dashboard-layout>.sidebar{left:-260px!important}.dashboard-layout>.sidebar.active{left:0!important}.dashboard-layout>.main-content{margin-left:0;width:100%}}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                <i class="bi bi-file-earmark-text-fill"></i>
+            </div>
+
+            <div class="logo-text">
+                <h4>Smart</h4>
+                <p>Question Paper Generator</p>
+            </div>
+
+        </div>
+
+        <ul class="sidebar-menu">
+
+            <li class="active">
+                <a href="/dashboard">
+                    <i class="bi bi-house-fill"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="/paper_details">
+                    <i class="bi bi-file-earmark-plus"></i>
+                    Generate Paper
+                </a>
+            </li>
+
+            <li>
+                <a href="/question_bank">
+                    <i class="bi bi-book-fill"></i>
+                    Question Bank
+                </a>
+            </li>
+
+            <li>
+                <a href="/previous_paper">
+                    <i class="bi bi-clock-history"></i>
+                    Recent Papers
+                </a>
+            </li>
+
+            <li>
+                <a href="/papers">
+                    <i class="bi bi-folder-fill"></i>
+                    View Papers
+                </a>
+            </li>
+
+            <li>
+                <a href="/profile">
+                    <i class="bi bi-person-fill"></i>
+                    Profile
+                </a>
+            </li>
+
+           
+
+        </ul>
+<div class="sidebar-bottom">
+
+    <a href="{{ url_for('logout') }}" class="sidebar-link logout-link">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Logout</span>
+    </a>
+
+</div>
+
+    </aside>
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <div class="main-content">
+
+        <!-- TOP HEADER -->
+
+        <header class="top-header">
+
+            <div class="header-left">
+
+                <button class="menu-btn">
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <h2>Dashboard</h2>
+
+            </div>
+
+            <div class="header-right">
+
+    <button class="notification-btn">
+
+        <i class="bi bi-bell-fill"></i>
+
+        <span class="notification-dot"></span>
+
+    </button>
+
+    <div class="profile-box">
+
+        <div class="profile-avatar">
+            {{ session["teacher_name"][0] }}
+        </div>
+
+        <div>
+
+            <small>Welcome,</small>
+
+            <h6>{{ session["teacher_name"] }}</h6>
+
+        </div>
+
+    </div>
+
+</div>
+
+        </header>
+
+        <!-- ================= PAGE CONTENT ================= -->
+
+        <div class="page-content">
+
+    <!-- ================= HERO ================= -->
+
+    <div class="hero-section">
+
+        <div class="hero-left">
+
+            <h1>
+                Hello, {{ session["teacher_name"] }} 👋
+            </h1>
+
+            <p>
+
+                Create, manage and generate university
+                question papers using Artificial Intelligence.
+
+            </p>
+
+            <div class="hero-tags">
+
+                <span>
+                    <i class="bi bi-cpu"></i>
+                    Smart
+                </span>
+
+                <span>
+                    <i class="bi bi-lightning-charge"></i>
+                    Fast
+                </span>
+
+                <span>
+                    <i class="bi bi-check-circle"></i>
+                    Accurate
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="hero-right">
+
+            <img src="{{ url_for('static', filename='images/hero-dashboard.png') }}"
+                 alt="Hero">
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= CARDS ================= -->
+
+    <div class="dashboard-cards">
+
+        <!-- Card 1 -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon purple">
+
+                <i class="bi bi-file-earmark-text-fill"></i>
+
+            </div>
+
+            <div class="stat-content">
+
+                <h3>Total Papers</h3>
+
+                <h1>{{ total }}</h1>
+
+                <p>Papers Generated</p>
+
+            </div>
+
+            <a href="/papers">
+
+                View All Papers
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <!-- Card 2 -->
+<div class="stat-card">
+
+    <div class="stat-icon green">
+        <i class="bi bi-book-fill"></i>
+    </div>
+
+    <div class="stat-content">
+
+        <h3>Question Bank</h3>
+
+        <h1>{{ bank_total }}</h1>
+
+        <p>Total Questions</p>
+
+        <small style="display:block; margin-top:10px; color:#666;">
+            MCQ : <b>{{ mcq_total }}</b> &nbsp; | &nbsp;
+            Short : <b>{{ short_total }}</b> &nbsp; | &nbsp;
+            Long : <b>{{ long_total }}</b>
+        </small>
+
+    </div>
+
+    <a href="/question_bank">
+        Open Question Bank
+        <i class="bi bi-arrow-right"></i>
+    </a>
+
+</div>
+
+        <!-- Card 3 -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon pink">
+
+                <i class="bi bi-plus-lg"></i>
+
+            </div>
+
+            <div class="stat-content">
+
+                <h3>Generate Paper</h3>
+
+                <p>Create a new university paper</p>
+
+            </div>
+
+            <a href="/paper_details">
+
+                Generate Now
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <!-- Card 4 -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon orange">
+
+                <i class="bi bi-clock-history"></i>
+
+            </div>
+
+            <div class="stat-content">
+
+                <h3>Recent Paper</h3>
+
+                <p>Open your latest paper</p>
+
+            </div>
+
+            <a href="/previous_paper">
+
+                Open Now
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+<!-- ================= AI QUESTION BANK ASSISTANT ================= -->
+
+<!-- Small floating bot button: the assistant is hidden until the teacher clicks it. -->
+<button id="ai-btn" type="button" aria-label="Open AI Question Bank Assistant" title="AI Question Bank Assistant">
+    <i class="bi bi-robot"></i>
+</button>
+
+<!-- Chat window -->
+<div id="ai-window" aria-hidden="true">
+    <div id="ai-header">
+        <div class="ai-title-wrap">
+            <div class="ai-avatar"><i class="bi bi-robot"></i></div>
+            <div>
+                <h5>Question Bank Assistant</h5>
+                <small>AI assistant for teachers</small>
+            </div>
+        </div>
+        <div class="ai-head-actions"><button id="new-ai" type="button" title="Start new conversation"><i class="bi bi-arrow-clockwise"></i></button><button id="close-ai" type="button" aria-label="Close assistant">&times;</button></div>
+    </div>
+
+    <div id="ai-body">
+        <div class="bot-message welcome-message">
+            <div class="message-title">👋 Hello {{ session["teacher_name"] }}!</div>
+            <p>I'm your Question Bank Assistant. I'll guide you step by step to create questions from your syllabus.</p>
+            <p class="ai-hint">Tell me the subject first. After generation, the questions are automatically saved under that subject in your Question Bank.</p>
+            <div class="quick-actions">
+                <button type="button" data-message="Hi">Start New Set</button>
+                <button type="button" data-message="How are you?">Say Hello</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="ai-upload-row">
+        <input type="file" id="syllabus-file" accept=".pdf,.png,.jpg,.jpeg,image/png,image/jpeg,application/pdf" hidden>
+        <button id="upload-btn" type="button" title="Upload syllabus PDF or image">
+            <i class="bi bi-paperclip"></i> Syllabus PDF
+        </button>
+        <span id="upload-name"></span>
+    </div>
+
+    <div id="ai-footer">
+        <input type="text" id="message" placeholder="Type your message..." autocomplete="off">
+        <button id="send-btn" type="button" aria-label="Send message">
+            <i class="bi bi-send-fill"></i>
+        </button>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='ai_assistant.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+const menuBtn = document.querySelector(".menu-btn");
+const sidebar = document.querySelector(".sidebar");
+
+menuBtn.addEventListener("click", function () {
+    sidebar.classList.toggle("active");
+});
+
+</script>
+</body>
+</html>

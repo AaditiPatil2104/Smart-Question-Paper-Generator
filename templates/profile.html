@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Smart Question Paper Generator</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+/* Keep the Profile navigation sidebar fixed; only the page content scrolls. */
+.dashboard-layout{min-height:100vh;align-items:stretch}
+.dashboard-layout>.sidebar{position:fixed!important;top:0!important;left:0!important;bottom:0!important;height:100vh!important;overflow-y:auto!important;overflow-x:hidden!important;z-index:1050}
+.dashboard-layout>.main-content{margin-left:260px;width:calc(100% - 260px);min-width:0}
+@media(max-width:992px){.dashboard-layout>.sidebar{left:-260px!important}.dashboard-layout>.sidebar.active{left:0!important}.dashboard-layout>.main-content{margin-left:0;width:100%}}
+</style>
+
+<style>
+.dashboard-layout{min-height:100vh;align-items:stretch}.dashboard-layout>.sidebar{position:fixed!important;top:0!important;left:0!important;bottom:0!important;height:100vh!important;overflow-y:auto!important;z-index:1050!important}.dashboard-layout>.main-content{margin-left:260px;width:calc(100% - 260px);min-width:0}@media(max-width:992px){.dashboard-layout>.sidebar{left:-260px!important}.dashboard-layout>.sidebar.active{left:0!important}.dashboard-layout>.main-content{margin-left:0;width:100%}}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <i class="bi bi-file-earmark-text-fill"></i>
+            <div>
+                <h2>Smart</h2>
+                <span>Question Paper Generator</span>
+            </div>
+        </div>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="/dashboard">
+                    <i class="bi bi-house-fill"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="/generate">
+                    <i class="bi bi-file-earmark-plus-fill"></i>
+                    Generate Paper
+                </a>
+            </li>
+
+            <li>
+                <a href="/question_bank">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                    Question Bank
+                </a>
+            </li>
+
+            <li>
+                <a href="/previous">
+                    <i class="bi bi-clock-history"></i>
+                    Previous Papers
+                </a>
+            </li>
+
+            <li>
+                <a href="/papers">
+                    <i class="bi bi-folder-fill"></i>
+                    View Papers
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="/profile">
+                    <i class="bi bi-person-fill"></i>
+                    Profile
+                </a>
+            </li>
+
+            
+
+        </ul>
+
+        <div class="logout-btn">
+            <a href="/logout">
+                <i class="bi bi-box-arrow-right"></i>
+                Logout
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main-content">
+
+        <div class="page-title">
+            <h1>My Profile</h1>
+        </div>
+        {% if request.args.get('error') %}<div class="alert alert-danger">{{ {'name':'Name must contain only letters and spaces.','phone':'Contact number must be exactly 10 digits and start with 6, 7, 8 or 9.','college':'College contains invalid characters.','department':'Department contains invalid characters.','photo':'Please upload a PNG, JPG, JPEG or WEBP image.'}.get(request.args.get('error'),'Please correct the highlighted field.') }}</div>{% endif %}{% if request.args.get('updated') %}<div class="alert alert-success">Profile changes saved successfully.</div>{% endif %}
+
+        <!-- Profile Banner -->
+
+        <div class="profile-banner">
+
+            <div class="profile-left">
+
+                <img
+    src="{{ url_for('static', filename='uploads/profile/' + (teacher['profile_image'] or 'default.png')) + '?v=' + (teacher['profile_image'] or 'default.png') }}"
+    class="profile-image"
+    alt="Profile">
+
+                <form action="/upload_profile" method="POST" enctype="multipart/form-data">
+
+                    <input
+                        type="file"
+                        id="profile_photo"
+                        name="profile_photo"
+                        hidden
+                        onchange="this.form.submit()">
+
+                    <label for="profile_photo" class="upload-btn">
+                        <i class="bi bi-camera-fill"></i>
+                        Upload Photo
+                    </label>
+
+                </form>
+
+            </div>
+
+            <div class="profile-right">
+
+                <h2>{{ teacher['name'] }}</h2>
+
+                <p>{{ teacher['email'] }}</p>
+
+                <span class="teacher-id">
+                    Teacher ID :
+                    {{ teacher['id'] }}
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- Personal Information Card -->
+
+        <div class="profile-card">
+
+            <div class="card-title">
+                <i class="bi bi-person-vcard-fill"></i>
+                Personal Information
+            </div>
+                        <form action="/update_profile" method="POST" id="profileForm" onsubmit="return validateProfile()">
+
+                <div class="profile-grid">
+
+                    <!-- Name -->
+
+                    <div class="form-group">
+                        <label>Full Name</label>
+
+                        <input
+                            type="text"
+                            name="name"
+                            id="profile_name"
+                            value="{{ teacher['name'] }}"
+                            readonly>
+                    </div>
+
+                    <!-- Email -->
+
+                    <div class="form-group">
+                        <label>Email</label>
+
+                        <input
+                            type="email"
+                            value="{{ teacher['email'] }}"
+                            readonly>
+                    </div>
+
+                    <!-- Phone -->
+
+                    <div class="form-group">
+                        <label>Phone Number</label>
+
+                        <input
+                            type="text"
+                            name="phone"
+                            id="profile_phone"
+                            value="{{ teacher['phone'] if teacher['phone'] else '' }}"
+                            inputmode="numeric" maxlength="10" readonly>
+                    </div>
+
+                    <!-- College -->
+
+                    <div class="form-group">
+                        <label>College</label>
+
+                        <input
+                            type="text"
+                            name="college"
+                            id="profile_college"
+                            value="{{ teacher['college'] if teacher['college'] else '' }}"
+                            readonly>
+                    </div>
+
+                    <!-- Department -->
+
+                    <div class="form-group">
+                        <label>Department</label>
+
+                        <input
+                            type="text"
+                            name="department"
+                            id="profile_department"
+                            value="{{ teacher['department'] if teacher['department'] else '' }}"
+                            readonly>
+                    </div>
+
+                    <!-- Joined On -->
+
+                    <div class="form-group">
+                        <label>Joined On</label>
+
+                        <input
+                            type="text"
+                            value="{{ teacher['created_at'] if teacher['created_at'] else 'Not Available' }}"
+                            readonly>
+                    </div>
+
+                </div>
+
+                <!-- Buttons -->
+
+                <div class="button-area">
+
+                    <button
+                        type="button"
+                        id="editBtn"
+                        class="edit-btn">
+
+                        <i class="bi bi-pencil-fill"></i>
+
+                        Edit Profile
+
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="saveBtn"
+                        class="save-btn"
+                        disabled>
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        Save Changes
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+            </main>
+
+</div>
+
+<script>
+const editBtn=document.getElementById('editBtn');
+const saveBtn=document.getElementById('saveBtn');
+const editable=[document.getElementById('profile_name'),document.getElementById('profile_phone'),document.getElementById('profile_college'),document.getElementById('profile_department')];
+editBtn.addEventListener('click',()=>{
+  editable.forEach(input=>{input.removeAttribute('readonly');input.classList.add('editable');});
+  saveBtn.disabled=false;
+  editBtn.innerHTML='<i class="bi bi-pencil-square"></i> Editing...';
+  editBtn.disabled=true;
+  document.getElementById('profile_name').focus();
+});
+document.getElementById('profile_phone').addEventListener('input',function(){this.value=this.value.replace(/\D/g,'').slice(0,10);});
+document.getElementById('profile_name').addEventListener('input',function(){this.value=this.value.replace(/[^A-Za-z ]/g,'');});
+function validateProfile(){
+  const name=document.getElementById('profile_name').value.trim();
+  const phone=document.getElementById('profile_phone').value.trim();
+  const college=document.getElementById('profile_college').value.trim();
+  const department=document.getElementById('profile_department').value.trim();
+  if(!/^[A-Za-z ]+$/.test(name)){alert('Name must contain only letters and spaces.');return false;}
+  if(!/^[6-9]\d{9}$/.test(phone)){alert('Contact number must be exactly 10 digits and start with 6, 7, 8 or 9.');return false;}
+  if(college && !/^[A-Za-z0-9 .,&()\-]+$/.test(college)){alert('College contains invalid characters.');return false;}
+  if(department && !/^[A-Za-z0-9 .,&()\-]+$/.test(department)){alert('Department contains invalid characters.');return false;}
+  return true;
+}
+</script>
+
+</body>
+</html>
